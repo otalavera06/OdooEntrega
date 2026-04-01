@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 
-# from odoo import models, fields, api
+from odoo import models, fields, api
 
 
-# class estatistikak(models.Model):
-#     _name = 'estatistikak.estatistikak'
-#     _description = 'estatistikak.estatistikak'
+class estatistika_orokorrak(models.Model):
+    _name = 'estatistikak.estatistika_orokorrak'
+    _description = 'estatistikak.estatistika_orokorrak'
 
-#     name = fields.Char()
-#     value = fields.Integer()
-#     value2 = fields.Float(compute="_value_pc", store=True)
-#     description = fields.Text()
-#
-#     @api.depends('value')
-#     def _value_pc(self):
-#         for record in self:
-#             record.value2 = float(record.value) / 100
+    name = fields.Char()
+
+class estatistika_espezifikoak(models.Model):
+    _name = 'estatistikak.estatistika_espezifikoak'
+    _description = 'estatistikak.estatistika_espezifikoak'
+
+    name = fields.Char()
+

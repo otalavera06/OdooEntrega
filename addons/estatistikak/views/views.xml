@@ -1,60 +1,96 @@
 <odoo>
   <data>
-    <!-- explicit list view definition -->
-<!--
-    <record model="ir.ui.view" id="estatistikak.list">
-      <field name="name">Estatistikak list</field>
-      <field name="model">estatistikak.estatistikak</field>
+
+    <!-- LISTA OROKORRAK -->
+    <record model="ir.ui.view" id="estatistika_orokorrak_list">
+      <field name="name">estatistika.orokorrak.tree</field>
+      <field name="model">estatistikak.estatistika_orokorrak</field>
       <field name="arch" type="xml">
         <tree>
           <field name="name"/>
-          <field name="value"/>
-          <field name="value2"/>
         </tree>
       </field>
     </record>
--->
 
-    <!-- actions opening views on models -->
-<!--
-    <record model="ir.actions.act_window" id="estatistikak.action_window">
-      <field name="name">Estatistikak window</field>
-      <field name="res_model">estatistikak.estatistikak</field>
-      <field name="view_mode">tree,form</field>
-    </record>
--->
-
-    <!-- server action to the one above -->
-<!--
-    <record model="ir.actions.server" id="estatistikak.action_server">
-      <field name="name">Estatistikak server</field>
-      <field name="model_id" ref="model_estatistikak_estatistikak"/>
-      <field name="state">code</field>
-      <field name="code">
-        action = {
-          "type": "ir.actions.act_window",
-          "view_mode": "tree,form",
-          "res_model": model._name,
-        }
+    <!-- LISTA ESPEZIFIKOAK -->
+    <record model="ir.ui.view" id="estatistika_espezifikoak_list">
+      <field name="name">estatistika.espezifikoak.tree</field>
+      <field name="model">estatistikak.estatistika_espezifikoak</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+        </tree>
       </field>
     </record>
--->
 
-    <!-- Top menu item -->
-<!--
+    <!-- LISTA DESKONTUAK -->
+    <record model="ir.ui.view" id="deskontuak_tree">
+      <field name="name">deskontuak.tree</field>
+      <field name="model">estatistikak.deskontuak</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="deskontu_mota"/>
+          <field name="balioa"/>
+          <field name="aktibo"/>
+        </tree>
+      </field>
+    </record>
+
+    <!-- FORM DESKONTUAK -->
+    <record id="deskontuak_form" model="ir.ui.view">
+      <field name="name">deskontuak.form</field>
+      <field name="model">estatistikak.deskontuak</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <field name="name"/>
+              <field name="deskontu_mota"/>
+              <field name="balioa"/>
+              <field name="aktibo"/>
+              <field name="hasiera_data"/>
+              <field name="amaiera_data"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- ACTIONS -->
+    <record model="ir.actions.act_window" id="estatistika_orokorrak_action_window">
+      <field name="name">Estatistika Orokorrak</field>
+      <field name="res_model">estatistikak.estatistika_orokorrak</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="estatistika_espezifikoak_action_window">
+      <field name="name">Estatistika Espezifikoak</field>
+      <field name="res_model">estatistikak.estatistika_espezifikoak</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="deskontuak_action">
+      <field name="name">Deskontuak</field>
+      <field name="res_model">estatistikak.deskontuak</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- MENUS ROOT -->
     <menuitem name="Estatistikak" id="estatistikak.menu_root"/>
--->
-    <!-- menu categories -->
-<!--
-    <menuitem name="Menu 1" id="estatistikak.menu_1" parent="estatistikak.menu_root"/>
-    <menuitem name="Menu 2" id="estatistikak.menu_2" parent="estatistikak.menu_root"/>
--->
-    <!-- actions -->
-<!--
-    <menuitem name="List" id="estatistikak.menu_1_list" parent="estatistikak.menu_1"
-              action="estatistikak.action_window"/>
-    <menuitem name="Server to list" id="estatistikak" parent="estatistikak.menu_2"
-              action="estatistikak.action_server"/>
--->
+
+    <!-- SUBMENUS -->
+    <menuitem name="Estatistika Orokorrak" id="estatistikak.menu_1"
+              parent="estatistikak.menu_root"
+              action="estatistika_orokorrak_action_window"/>
+
+    <menuitem name="Estatistika Espezifikoak" id="estatistikak.menu_2"
+              parent="estatistikak.menu_root"
+              action="estatistika_espezifikoak_action_window"/>
+
+    <menuitem name="Deskontuak" id="menu_deskontuak"
+              parent="estatistikak.menu_root"
+              action="deskontuak_action"/>
+
   </data>
 </odoo>
