@@ -4,7 +4,7 @@ from odoo.http import request
 
 class DeskontuakAPI(http.Controller):
 
-    @http.route('/api/deskontuak', auth='public', methods=['GET'], type='json')
+    @http.route('/api/deskontuak', auth='public', methods=['POST'], type='json', csrf=False)
     def get_deskontu_guztiak(self):
         deskontuak = request.env['estatistikak.deskontuak'].sudo().search([])
         return [
@@ -18,7 +18,7 @@ class DeskontuakAPI(http.Controller):
             for d in deskontuak
         ]
     
-    @http.route('/api/deskontuak/jarri', auth='public', methods=['POST'], type='json')
+    @http.route('/api/deskontuak/jarri', auth='public', methods=['POST'], type='json', csrf=False)
     def deskontua_jarri(self, **kwargs):
         deskontua_id = kwargs.get('deskontua_id')
         prezioa = kwargs.get('prezioa')
