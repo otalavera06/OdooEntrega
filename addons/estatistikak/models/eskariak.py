@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-
 from odoo import models, fields, api
 
 class eskariak(models.Model):
     _name = 'estatistikak.eskariak'
-    _description = 'Eskariak / Pedidos'
+    _description = 'Eskariak'
 
     name = fields.Char(string="Eskari Zenbakia", required=True)
     data = fields.Date(string="Data", default=fields.Date.today, required=True)

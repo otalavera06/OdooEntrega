@@ -1,40 +1,40 @@
-from odoo import http
-from odoo.http import request
+# -*- coding: utf-8 -*-
+import json
 
+from odoo import api, http, fields, registry, SUPERUSER_ID
+from odoo.http import request
 
 class DeskontuakAPI(http.Controller):
 
-    @http.route('/api/deskontuak', auth='public', methods=['POST'], type='json', csrf=False)
-    def get_deskontu_guztiak(self):
-        deskontuak = request.env['estatistikak.deskontuak'].sudo().search([])
-        return [
-            {
-                'id': d.id,
-                'name': d.name,
-                'deskontu_mota': d.deskontu_mota,
-                'balioa': d.balioa,
-                'aktibo': d.aktibo,
-            }
-            for d in deskontuak
-        ]
-    
-    @http.route('/api/deskontuak/jarri', auth='public', methods=['POST'], type='json', csrf=False)
-    def deskontua_jarri(self, **kwargs):
-        deskontua_id = kwargs.get('deskontua_id')
-        prezioa = kwargs.get('prezioa')
+    @http.route('/api/check_discount', type='http', auth='none', methods=['POST'], csrf=False)
+    def check_discount(self, **post):
+        payload = request.httprequest.get_json(silent=True) or {}
+        params = payload.get('params') if isinstance(payload.get('params'), dict) else payload
+        code = params.get('code')
+        if not code:
+            return self._json_response({'status': 'error', 'message': 'Kodea falta da'})
 
-        if not deskontua_id or prezioa is None:
-            return {'error': 'deskontua_id eta prezioa beharrezkoak dira.'}
+        db_name = params.get('db') or 'entregaodoo'
+        with registry(db_name).cursor() as cr:
+            env = api.Environment(cr, SUPERUSER_ID, {})
+            discount = env['estatistikak.deskontuak'].sudo().search([
+                ('name', '=', code),
+                ('aktibo', '=', True),
+                ('hasiera_data', '<=', fields.Date.today()),
+                ('amaiera_data', '>=', fields.Date.today())
+            ], limit=1)
+
+            if discount:
+                return self._json_response({
+                    'status': 'success',
+                    'code': discount.name,
+                    'percentage': discount.balioa
+                })
         
-        deskontua = request.env['estatistikak.deskontuak'].sudo().browse(deskontua_id)
+        return self._json_response({'status': 'error', 'message': 'Kodea ez da baliozkoa'})
 
-        if not deskontua.exists():
-            return {'error': "Deskontua ez da aurkitu."}
-        
-        prezio_berria = deskontua.deskontua_aktibatu(prezioa)
-
-        return {
-            'prezio_originala': prezioa,
-            'deskontatutako_prezioa': prezio_berria,
-            'deskontua': deskontua.name,
-        }
+    def _json_response(self, data):
+        return request.make_response(
+            json.dumps(data),
+            headers=[('Content-Type', 'application/json')]
+        )

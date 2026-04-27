@@ -1,7 +1,7 @@
 <odoo>
   <data>
 
-    <!-- 1. ACTIONS (First, because they are referenced in Forms) -->
+    <!-- 1. ACTIONS -->
     <record model="ir.actions.act_window" id="deskontuak_action_graph">
       <field name="name">Deskontuen Grafikoa</field>
       <field name="res_model">estatistikak.deskontuak</field>
@@ -16,14 +16,14 @@
       <field name="target">new</field>
     </record>
 
-    <!-- 2. FORMS (That use the actions above) -->
+    <!-- 2. FORMS -->
     <record id="estatistika_orokorrak_form" model="ir.ui.view">
       <field name="name">estatistika.orokorrak.form</field>
       <field name="model">estatistikak.estatistika_orokorrak</field>
       <field name="arch" type="xml">
         <form create="0" edit="0">
           <header>
-            <button name="%(deskontuak_action_graph)d" string="Ikusi Grafikoa" type="action" class="btn-primary"/>
+            <button name="%(eskariak_action_graph)d" string="Ikusi Grafikoa" type="action" class="btn-primary"/>
           </header>
           <sheet>
             <div class="oe_title">
@@ -32,19 +32,13 @@
               </h1>
             </div>
             <group>
-              <group string="Laburpena">
-                <field name="total_deskontuak"/>
-                <field name="aktibo_kopurua"/>
-                <field name="batez_besteko_balioa"/>
-              </group>
-              <group string="Mota Banaketa">
-                <field name="ehuneko_kopurua"/>
-                <field name="finkoa_kopurua"/>
+              <group string="Eskarien Laburpena">
+                <field name="total_eskariak"/>
+                <field name="total_zenbatekoa"/>
+                <field name="batez_besteko_zenbatekoa"/>
+                <field name="bezero_kopurua"/>
               </group>
             </group>
-            <div class="text-center mt-4">
-              <p class="text-muted">Sakatu "Ikusi Grafikoa" botoia banaketa modu bisualean ikusteko.</p>
-            </div>
           </sheet>
         </form>
       </field>
@@ -64,7 +58,7 @@
                 <field name="name" readonly="1"/>
               </h1>
             </div>
-            <group string="Eskarien Estatistika Espezifikoa (Hilabeteko Eguna)">
+            <group string="Eskarien Estatistika Espezifikoa">
               <group>
                 <field name="total_eskariak"/>
                 <field name="egun_ohikoena" style="font-size: 24px; color: #7c7bad; font-weight: bold;"/>
@@ -81,7 +75,7 @@
       </field>
     </record>
 
-    <!-- 3. VIEWS (Trees, Graphs, Search) -->
+    <!-- 3. VIEWS -->
     <record model="ir.ui.view" id="eskariak_tree">
       <field name="name">eskariak.tree</field>
       <field name="model">estatistikak.eskariak</field>
@@ -101,7 +95,6 @@
       <field name="arch" type="xml">
         <tree>
           <field name="name"/>
-          <field name="deskontu_mota"/>
           <field name="balioa"/>
           <field name="aktibo"/>
         </tree>
@@ -112,8 +105,9 @@
       <field name="name">deskontuak.graph</field>
       <field name="model">estatistikak.deskontuak</field>
       <field name="arch" type="xml">
-        <graph string="Deskontu Motak" type="pie">
-          <field name="deskontu_mota" type="row"/>
+        <graph string="Deskontuen Banaketa" type="pie">
+          <field name="name" type="row"/>
+          <field name="balioa" type="measure"/>
         </graph>
       </field>
     </record>
@@ -122,8 +116,8 @@
       <field name="name">eskariak.graph</field>
       <field name="model">estatistikak.eskariak</field>
       <field name="arch" type="xml">
-        <graph string="Eskariak Egunka" type="bar">
-          <field name="day_of_month" type="row"/>
+        <graph string="Eskarien Zenbatekoa" type="bar">
+          <field name="name" type="row"/>
           <field name="zenbatekoa" type="measure"/>
         </graph>
       </field>
@@ -137,7 +131,6 @@
           <sheet>
             <group>
               <field name="name"/>
-              <field name="deskontu_mota"/>
               <field name="balioa"/>
               <field name="aktibo"/>
               <field name="hasiera_data"/>

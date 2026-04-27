@@ -1,23 +1,19 @@
 # -*- coding: utf-8 -*-
-
 from odoo import models, fields, api
 
 class estatistika_orokorrak(models.TransientModel):
     _name = 'estatistikak.estatistika_orokorrak'
     _description = 'Estatistika Orokorrak'
 
-    name = fields.Char(string="Estatistikaren Izena", default="Deskontuen Estatistika Orokorrak")
-    
-    total_deskontuak = fields.Integer(string="Deskontu kopurua", compute="_compute_estatistikak")
-    aktibo_kopurua = fields.Integer(string="Deskontu aktiboak", compute="_compute_estatistikak")
-    ehuneko_kopurua = fields.Integer(string="Ehuneko deskontuak", compute="_compute_estatistikak")
-    finkoa_kopurua = fields.Integer(string="Kopuru finkoko deskontuak", compute="_compute_estatistikak")
-    batez_besteko_balioa = fields.Float(string="Batez besteko balioa", compute="_compute_estatistikak")
+    name = fields.Char(string="Izena", default="Eskarien Estatistika Orokorrak")
+    total_eskariak = fields.Integer(string="Eskariak guztira")
+    total_zenbatekoa = fields.Float(string="Zenbatekoa guztira (eskariak)", digits=(16, 2))
+    batez_besteko_zenbatekoa = fields.Float(string="Batez besteko zenbatekoa", digits=(16, 2))
+    bezero_kopurua = fields.Integer(string="Bezero kopurua")
 
     @api.model
     def action_show_stats(self):
-        """Metodo honek estatistikak erakutsiko dituen bista irekitzen du"""
-        record = self.create({})
+        record = self.create(self._get_estatistikak_values())
         return {
             'type': 'ir.actions.act_window',
             'res_model': 'estatistikak.estatistika_orokorrak',
@@ -26,15 +22,14 @@ class estatistika_orokorrak(models.TransientModel):
             'target': 'current',
         }
 
-    def _compute_estatistikak(self):
-        for rec in self:
-            deskontuak = self.env['estatistikak.deskontuak'].search([])
-            rec.total_deskontuak = len(deskontuak)
-            rec.aktibo_kopurua = len(deskontuak.filtered(lambda d: d.aktibo))
-            rec.ehuneko_kopurua = len(deskontuak.filtered(lambda d: d.deskontu_mota == 'ehuneko'))
-            rec.finkoa_kopurua = len(deskontuak.filtered(lambda d: d.deskontu_mota == 'kopurua'))
-            
-            if rec.total_deskontuak > 0:
-                rec.batez_besteko_balioa = sum(deskontuak.mapped('balioa')) / rec.total_deskontuak
-            else:
-                rec.batez_besteko_balioa = 0.0
+    @api.model
+    def _get_estatistikak_values(self):
+        eskariak = self.env['estatistikak.eskariak'].search([])
+        total_eskariak = len(eskariak)
+        total_zenbatekoa = sum(eskariak.mapped('zenbatekoa'))
+        return {
+            'total_eskariak': total_eskariak,
+            'total_zenbatekoa': total_zenbatekoa,
+            'batez_besteko_zenbatekoa': total_zenbatekoa / total_eskariak if total_eskariak else 0.0,
+            'bezero_kopurua': len(set(eskariak.mapped('bezeroa')) - {False, ''}),
+        }

@@ -12,8 +12,9 @@ services:
     image: odoo:17
     depends_on:
       - db
+    command: --load=base,web,estatistikak --database=entregaodoo
     ports:
-      - "8069:8069"
+      - "8070:8069"
     environment:
       HOST: db
       USER: odoo
