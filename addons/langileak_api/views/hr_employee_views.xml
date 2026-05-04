@@ -1,0 +1,24 @@
+<odoo>
+  <data>
+    <record id="action_sync_langileak_from_api" model="ir.actions.server">
+      <field name="name">API-tik langileak sinkronizatu</field>
+      <field name="model_id" ref="hr.model_hr_employee"/>
+      <field name="binding_model_id" ref="hr.model_hr_employee"/>
+      <field name="binding_view_types">list,form</field>
+      <field name="state">code</field>
+      <field name="code">
+        action = model.sync_langileak_from_api()
+      </field>
+    </record>
+
+    <record id="ir_cron_sync_langileak_from_api" model="ir.cron">
+      <field name="name">API Langileak sinkronizatu</field>
+      <field name="model_id" ref="hr.model_hr_employee"/>
+      <field name="state">code</field>
+      <field name="code">model.sync_langileak_from_api()</field>
+      <field name="interval_number">5</field>
+      <field name="interval_type">minutes</field>
+      <field name="active">True</field>
+    </record>
+  </data>
+</odoo>

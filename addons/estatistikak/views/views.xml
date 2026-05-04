@@ -23,7 +23,7 @@
       <field name="arch" type="xml">
         <form create="0" edit="0">
           <header>
-            <button name="%(eskariak_action_graph)d" string="Ikusi Grafikoa" type="action" class="btn-primary"/>
+            <button name="action_show_graph" string="Ikusi Grafikoa" type="object" class="btn-primary"/>
           </header>
           <sheet>
             <div class="oe_title">
@@ -50,7 +50,7 @@
       <field name="arch" type="xml">
         <form create="0" edit="0">
           <header>
-            <button name="%(eskariak_action_graph)d" string="Ikusi Grafikoa" type="action" class="btn-primary"/>
+            <button name="action_show_graph" string="Ikusi Grafikoa" type="object" class="btn-primary"/>
           </header>
           <sheet>
             <div class="oe_title">
@@ -76,19 +76,6 @@
     </record>
 
     <!-- 3. VIEWS -->
-    <record model="ir.ui.view" id="eskariak_tree">
-      <field name="name">eskariak.tree</field>
-      <field name="model">estatistikak.eskariak</field>
-      <field name="arch" type="xml">
-        <tree editable="bottom">
-          <field name="name"/>
-          <field name="data"/>
-          <field name="bezeroa"/>
-          <field name="zenbatekoa"/>
-        </tree>
-      </field>
-    </record>
-
     <record model="ir.ui.view" id="deskontuak_tree">
       <field name="name">deskontuak.tree</field>
       <field name="model">estatistikak.deskontuak</field>
@@ -141,21 +128,6 @@
       </field>
     </record>
 
-    <record id="eskariak_search" model="ir.ui.view">
-      <field name="name">eskariak.search</field>
-      <field name="model">estatistikak.eskariak</field>
-      <field name="arch" type="xml">
-        <search>
-          <field name="name"/>
-          <field name="bezeroa"/>
-          <group expand="0" string="Taldekatu">
-            <filter string="Hilabeteko Eguna" name="group_by_day" context="{'group_by': 'day_of_month'}"/>
-            <filter string="Data" name="group_by_date" context="{'group_by': 'data'}"/>
-          </group>
-        </search>
-      </field>
-    </record>
-
     <!-- 4. SERVER ACTIONS -->
     <record model="ir.actions.server" id="action_estatistika_orokorrak">
       <field name="name">Estatistika Orokorrak</field>
@@ -185,7 +157,7 @@
     <record model="ir.actions.act_window" id="eskariak_action">
       <field name="name">Eskariak</field>
       <field name="res_model">estatistikak.eskariak</field>
-      <field name="view_mode">tree,graph,form</field>
+      <field name="view_mode">graph</field>
     </record>
 
     <!-- 6. MENUS -->
@@ -201,7 +173,8 @@
 
     <menuitem name="Eskariak" id="menu_eskariak"
               parent="estatistikak.menu_root"
-              action="eskariak_action"/>
+              action="eskariak_action"
+              groups="base.group_no_one"/>
 
     <menuitem name="Deskontuak" id="menu_deskontuak"
               parent="estatistikak.menu_root"

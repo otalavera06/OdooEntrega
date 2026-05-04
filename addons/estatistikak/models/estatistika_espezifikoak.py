@@ -2,6 +2,8 @@
 from odoo import models, fields, api
 from collections import Counter
 
+from .api_client import EskaerakApiClient
+
 class estatistika_espezifikoak(models.TransientModel):
     _name = 'estatistikak.estatistika_espezifikoak'
     _description = 'Estatistika Espezifikoak'
@@ -22,13 +24,18 @@ class estatistika_espezifikoak(models.TransientModel):
             'target': 'current',
         }
 
+    def action_show_graph(self):
+        self.env['estatistikak.eskariak'].refresh_from_api()
+        return self.env.ref('estatistikak.eskariak_action_graph').read()[0]
+
     def _compute_espezifikoak(self):
         for rec in self:
-            eskariak = self.env['estatistikak.eskariak'].search([])
+            eskariak = EskaerakApiClient(self.env).get_eskaerak_with_totals()
             rec.total_eskariak = len(eskariak)
             
             if eskariak:
-                egunak = [eskari.data.day for eskari in eskariak if eskari.data]
+                egunak = [rec._api_day(eskari.get('data') or eskari.get('Data')) for eskari in eskariak]
+                egunak = [eguna for eguna in egunak if eguna]
                 if egunak:
                     ohikoena = Counter(egunak).most_common(1)[0]
                     rec.egun_ohikoena = ohikoena[0]
@@ -39,3 +46,11 @@ class estatistika_espezifikoak(models.TransientModel):
             else:
                 rec.egun_ohikoena = 0
                 rec.eskari_kopurua_egun_horretan = 0
+
+    def _api_day(self, value):
+        if not value:
+            return 0
+        try:
+            return int(str(value).split('T', 1)[0].split(' ', 1)[0].split('-')[-1])
+        except (TypeError, ValueError):
+            return 0
